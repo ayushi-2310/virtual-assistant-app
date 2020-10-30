@@ -8,6 +8,7 @@ import os
 import wolframalpha
 import json
 import requests
+from pycricbuzz import Cricbuzz
 import time
 import webbrowser
 from youtube_search import YoutubeSearch
@@ -95,6 +96,15 @@ if __name__=="__main__":
             webbrowser.open_new_tab("gmail.com")
             speak("Google Mail open now")
             time.sleep(5)
+        elif 'score' in query:
+            c=Cricbuzz()
+
+            matches=c.matches()
+            for match in matches:
+                print(match)
+                #print(c.livescore(match['id']))
+                print(c.scorecard(match['id']))
+                break    
       #music
         if 'play music' in query:
             music_dir='C:\\Users\\HP\\Music'
@@ -155,4 +165,20 @@ if __name__=="__main__":
             news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com/home/headlines")
             speak('Here are some headlines from the Times of India,Happy reading')
             time.sleep(10)
+        
+        elif "write a note" in query:
+            speak("What should I write")
+            note=takeCommand()
+            file=open('sammmy.txt','w')
+            speak("date include")
+            # if 'yes' in snfm:
+            #    file.write(note)
+            # else:    
+            file.write(note) 
+        
+        elif "note" in query:
+            speak("showing notes")
+            file=open('sammmy.txt',"r")
+            print(file.read())
+            speak(file.read(6)) 
             
