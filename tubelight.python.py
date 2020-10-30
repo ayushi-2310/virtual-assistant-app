@@ -6,6 +6,12 @@ import speech_recognition as sr
 import wikipedia
 import os
 import wolframalpha
+import json
+import requests
+import time
+import webbrowser
+from youtube_search import YoutubeSearch
+
 
 #********************************************************#
 engine = pyttsx3.init('sapi5')
@@ -54,21 +60,44 @@ def takeCommand():
                          
         
 if __name__=="__main__":
-    if (1): 
+    while (1): 
         greeting()
         speak("Tell me how can I help you?")
-      #wikipedia
         query=takeCommand().lower()
+        if "good bye" in query or "ok bye" in query or "stop" in query:
+            speak('Good bye')
+            print('Good bye')
+            break
+    
+           
+      #wikipedia
         if 'wikipedia' in query:
             speak('Searching Wikipedia...')
             query =query.replace("wikipedia", "")
             results=wikipedia.summary(query, sentences=2)
             speak("accordingly")   
             print(results)
-            speak(results)   
+            speak(results) 
+        #youtube  
+        elif 'open youtube' in query:
+            #   results=YoutubeSearch("search terms", max_results=10).to_dict()
+            #   print(results)
+            webbrowser.open_new_tab("https://www.youtube.com")
+            speak("youtube is open now")
+            time.sleep(10)
+        #google
+        elif 'open google' in query:
+            webbrowser.open_new_tab("https://www.google.com")
+            speak("Google chrome is open now")
+            time.sleep(10)
+        #gmail
+        elif 'open mail' in query:
+            webbrowser.open_new_tab("gmail.com")
+            speak("Google Mail open now")
+            time.sleep(5)
       #music
         if 'play music' in query:
-            music_dir='C:\\Users\\This PC\\Music'
+            music_dir='C:\\Users\\HP\\Music'
             songs = os.listdir(music_dir)
             os.startfile(os.path.join(music_dir,songs[1]))
       #caluculations
@@ -91,3 +120,39 @@ if __name__=="__main__":
             answer = next(res.results).text
             speak(answer)
             print(answer)
+      #weather
+        elif "weather" in query:
+            api_key="8ef61edcf1c576d65d836254e11ea420"
+            base_url="https://api.openweathermap.org/data/2.5/weather?"
+            speak("whats the city name")
+            city_name=takeCommand()
+            complete_url=base_url+"appid="+api_key+"&q="+city_name
+            response = requests.get(complete_url)
+            x=response.json()
+            if x["cod"]!="404":
+                y=x["main"]
+                current_temperature = y["temp"] -273
+                current_humidiy = y["humidity"]
+                z = x["weather"]
+                weather_description = z[0]["description"]
+                speak(" Temperature in degree celsius is " +
+                      str(current_temperature) +
+                      "\n humidity in percentage is " +
+                      str(current_humidiy) +
+                      "\n description  " +
+                      str(weather_description))
+                print(" Temperature in degree celsius = " +
+                      str(current_temperature) +
+                      "\n humidity (in percentage) = " +
+                      str(current_humidiy) +
+                      "\n description = " +
+                      str(weather_description))
+
+            else:
+                speak(" City Not Found ")
+        #news
+        elif 'news' in query:
+            news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com/home/headlines")
+            speak('Here are some headlines from the Times of India,Happy reading')
+            time.sleep(10)
+            
