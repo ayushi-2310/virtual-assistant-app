@@ -8,7 +8,7 @@ import os
 import wolframalpha
 import json
 import requests
-from pycricbuzz import Cricbuzz
+# from pycricbuzz import Cricbuzz
 import time
 import webbrowser
 from youtube_search import YoutubeSearch
@@ -63,7 +63,7 @@ def takeCommand():
 if __name__=="__main__":
     while (1): 
         greeting()
-        speak("Tell me how can I help you?")
+        speak("I am SASS. Tell me how can I help you?")
         query=takeCommand().lower()
         if "good bye" in query or "ok bye" in query or "stop" in query:
             speak('Good bye')
