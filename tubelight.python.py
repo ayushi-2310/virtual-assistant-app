@@ -8,7 +8,7 @@ import os
 import wolframalpha
 import json
 import requests
-# from pycricbuzz import Cricbuzz
+from pycricbuzz import Cricbuzz
 import time
 import webbrowser
 from youtube_search import YoutubeSearch
@@ -61,13 +61,14 @@ def takeCommand():
                          
         
 if __name__=="__main__":
+    greeting()
+    speak("I am SASS.")
     while (1): 
-        greeting()
-        speak("I am SASS. Tell me how can I help you?")
+        speak("How can I help you?")
         query=takeCommand().lower()
         if "good bye" in query or "ok bye" in query or "stop" in query:
-            speak('Good bye')
-            print('Good bye')
+            speak('Good bye have a nice day!')
+            print('Good bye.Have a nice day!')
             break
     
            
@@ -81,16 +82,16 @@ if __name__=="__main__":
             speak(results) 
         #youtube  
         elif 'open youtube' in query:
-            #   results=YoutubeSearch("search terms", max_results=10).to_dict()
+            #   results=YoutubeSearch("search terms", max_results=20).to_dict()
             #   print(results)
             webbrowser.open_new_tab("https://www.youtube.com")
             speak("youtube is open now")
-            time.sleep(10)
+            time.sleep(20)
         #google
         elif 'open google' in query:
             webbrowser.open_new_tab("https://www.google.com")
             speak("Google chrome is open now")
-            time.sleep(10)
+            time.sleep(20)
         #gmail
         elif 'open mail' in query:
             webbrowser.open_new_tab("gmail.com")
@@ -165,7 +166,7 @@ if __name__=="__main__":
         elif 'news' in query:
             news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com/home/headlines")
             speak('Here are some headlines from the Times of India,Happy reading')
-            time.sleep(10)
+            time.sleep(20)
         
         elif "write a note" in query:
             speak("What should I write")
