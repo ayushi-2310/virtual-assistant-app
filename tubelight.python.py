@@ -1,4 +1,4 @@
-#******************Import Packages*****************************************#
+#******************Import gridages*****************************************#
 
 import pyttsx3
 import datetime
@@ -12,6 +12,13 @@ from pycricbuzz import Cricbuzz
 import time
 import webbrowser
 from youtube_search import YoutubeSearch
+from tkinter import  *
+from PIL import ImageTk ,Image
+import tkinter as tk
+import sys
+import time
+import calendar
+
 
 
 #********************************************************#
@@ -19,11 +26,68 @@ engine = pyttsx3.init('sapi5')
 voice=engine.getProperty('voices')
 #print(voices[1].id)
 engine.setProperty('voice',voice[0].id)
+
+""" DICTIONARY PHRASES """
+phrases = ["Phrase1", "Phrase2", "Phrase3"]
+
+
+
+
+class Clock(tk.Label):
+    """ Class that contains the clock widget and clock refresh """
+
+    def __init__(self, parent=None, seconds=True, colon=False):
+        """
+        Create and place the clock widget into the parent element
+        It's an ordinary Label element with two additional features.
+        """
+        tk.Label.__init__(self, parent)
+
+        self.display_seconds = seconds
+        if self.display_seconds:
+            self.time     = time.strftime('%I:%M:%S %p')
+        else:
+            self.time     = time.strftime('%I:%M:%S %p').lstrip('0')
+        self.display_time = self.time
+        self.configure(text=self.display_time)
+
+        if colon:
+            self.blink_colon()
+        self.after(200, self.tick)
+
+
+    def tick(self):
+        """ Updates the display clock every 200 milliseconds """
+        if self.display_seconds:
+            new_time = time.strftime('%I:%M:%S %p')
+        else:
+            new_time = time.strftime('%I:%M:%S %p').lstrip('0')
+        if new_time != self.time:
+            self.time = new_time
+            self.display_time = self.time
+            self.config(text=self.display_time)
+        self.after(200, self.tick)
+
+
+    def blink_colon(self):
+        """ Blink the colon every second """
+        if ':' in self.display_time:
+            self.display_time = self.display_time.replace(':',' ')
+        else:
+            self.display_time = self.display_time.replace(' ',':',1)
+        self.config(text=self.display_time)
+        self.after(1000, self.blink_colon)
+
+ 
+
+
+
+
 #greeting
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
-    
+   
 def greeting():
     hours=int(datetime.datetime.now().hour)
     if hours>=3 and hours<=12:
@@ -39,7 +103,7 @@ def takeCommand():
         
         print("Listening....")
         r.adjust_for_ambient_noise(source,duration=1)
-        print("now speak")
+        
                    
         
         audio=r.listen(source)
@@ -59,14 +123,15 @@ def takeCommand():
     
     return query
                          
-        
-if __name__=="__main__":
+
+
+def func():
     greeting()
     speak("I am SASS.")
     while (1): 
         speak("How can I help you?")
         query=takeCommand().lower()
-        if "good bye" in query or "ok bye" in query or "stop" in query:
+        if "goodbye" in query or "ok bye" in query or "stop" in query:
             speak('Good bye have a nice day!')
             print('Good bye.Have a nice day!')
             break
@@ -132,6 +197,10 @@ if __name__=="__main__":
             answer = next(res.results).text
             speak(answer)
             print(answer)
+        #time
+        elif 'time' in query:
+            strTime=datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"the time is {strTime}")
       #weather
         elif "weather" in query:
             api_key="8ef61edcf1c576d65d836254e11ea420"
@@ -162,6 +231,7 @@ if __name__=="__main__":
 
             else:
                 speak(" City Not Found ")
+        
         #news
         elif 'news' in query:
             news = webbrowser.open_new_tab("https://timesofindia.indiatimes.com/home/headlines")
@@ -171,7 +241,7 @@ if __name__=="__main__":
         elif "write a note" in query:
             speak("What should I write")
             note=takeCommand()
-            file=open('sammmy.txt','w')
+            file=open('demo.txt','w')
             speak("date include")
             # if 'yes' in snfm:
             #    file.write(note)
@@ -180,7 +250,112 @@ if __name__=="__main__":
         
         elif "note" in query:
             speak("showing notes")
-            file=open('sammmy.txt',"r")
+            file=open('demo.txt',"r")
             print(file.read())
             speak(file.read(6)) 
+
+        #shutdown
+        elif "shutdown" in query:
+            speak("Do you want to shutdown?")
+            shut=takeCommand()
+            if "yes" in shut:
+                print("Shutting down computer")
+                speak("Shutting down computer")
+                os.system("shutdown /s /t 30")
+           
+
+           
+
+
+if __name__=="__main__":
+    #interface
+    root=Tk()
+    root.title('SAS')
+    root.configure(bg='#BCD5E5')
+    root.geometry('700x700')
+
+
+    frameCnt = 30
+    frames = [PhotoImage(file='giphy.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+    
+    def search():
+        url=entry.get()
+        webbrowser.open(url)
+    #label1=Label(root,text="Enter URL here:",font=
+                                   # ("arial",15,"bold"))
+  
+    entry=Entry(root,width=35) 
+    
+    btn=Button(root,text="Search",command=search,bg="pink",
+                            fg="white",font=("arial",14,"bold"))
+    
+    
+    
+    def update(ind):
+
+        frame = frames[ind]
+        ind += 1
+        if ind == frameCnt:
+            ind = 0
+        label.configure(image=frame)
+        root.after(100, update, ind)
+    label = Label(root)
+
+    root.after(0, update, 0)
+    
+    w = Label(root, text=f"{datetime.datetime.now():%a, %b %d %Y}", fg="black", font=("helvetica", 15))
+
+   
+
+
+    lspace3=Label(text="              ",bg='#BCD5E5')
+    lspace3.grid(row=0,column=0)
+
+    my_img1 = ImageTk.PhotoImage(Image.open("voice1.png"))
+    cbutton = Button(root, image =my_img1 ,bg='#BCC6CE',padx=10,pady=10, command=lambda: func())
+    
             
+    
+
+
+    img1 = ImageTk.PhotoImage(Image.open("note.png"))
+    buttonscratch = Button(root, image = img1 ,command=lambda: os.startfile('demo.txt'))
+
+
+    lspace3=Label(text="              ",bg='#BCD5E5')
+    lspace4 = Label(text="              ",bg='#BCD5E5')
+    lspace5 = Label(text="              ",bg='#BCD5E5')
+
+       # this displays the clock know as clock1
+    clock1 = Clock(root)
+
+
+# This gives the clock format.
+    clock1.configure(bg='white',fg='black',font=("helvetica",15))
+
+    
+
+
+
+    
+    
+
+
+    #positions
+    label.grid(row=0,column=1)
+    lspace3.grid(row=1,column=1)
+    lspace4.grid(row=5,column=1)
+    lspace5.grid(row=7,column=0)
+    cbutton.grid(column=1, row=2)
+    buttonscratch.grid(row=8,column=0)
+    #label1.grid(row=5,column=0)
+    entry.grid(row=6,column=1)
+    btn.grid(row=8,column=1)
+    w.grid(row=8,column=2)
+    clock1.grid(row=9,column=2)
+
+
+
+
+    root.mainloop()
+    

@@ -7,7 +7,7 @@ import os
 
 root=Tk()
 root.title('SAS')
-root.configure(bg='#BCD5E5')
+root.configure(bg='#cc99ff')
 root.geometry('700x690')
 
 
